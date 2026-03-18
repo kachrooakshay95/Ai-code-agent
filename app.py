@@ -1,12 +1,18 @@
 from fastapi import FastAPI
 from openai import AzureOpenAI
+from dotenv import load_dotenv
+import os
 
 app = FastAPI()
+load_dotenv()
+api_key = os.getenv("AZURE_OPENAI_API_KEY")
+azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
 client = AzureOpenAI(
-    api_key="DD0sXc2FYavIm2jLWkEWOwkfgkKgcX4PTupZElbdhrhoRIV9btw3JQQJ99CCACfhMk5XJ3w3AAABACOGpyDF",
-    api_version="2024-02-15-preview",
-    azure_endpoint="https://ai-code-agent-openai.openai.azure.com/openai/deployments/gpt-code-agent/chat/completions?api-version=2025-01-01-preview"
+    api_key,
+    api_version,
+    azure_endpoint
 )
 
 @app.post("/review")
