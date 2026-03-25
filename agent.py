@@ -7,12 +7,12 @@ def code_review_agent(payload):
     prompt = f"""
 You are a senior software engineer performing a professional code review.
 
-Analyze the code and identify:
-- Long functions (>50 lines)
-- Hardcoded values
-- Duplicate logic
-- Poor naming conventions
-- Missing error handling
+Use ONLY these issue types:
+- LONG_FUNCTION
+- DUPLICATE_CODE
+- HARDCODED_VALUE
+- NAMING
+- ERROR_HANDLING
 
 Return ONLY valid JSON in this format:
 
@@ -48,9 +48,23 @@ Code:
     )
 
     result = response.choices[0].message.content
+    cleaned = clean_json_output(result)
 
     # Ensure JSON output
     try:
-        return json.loads(result)
+        return json.loads(cleaned)
     except:
         return {"error": "Invalid JSON", "raw_output": result}
+    
+def clean_json_output(text):
+    text = text.strip()
+
+    if "'''" in text:
+        parts = text.split("'''")
+        if len(parts) > 1:
+            text = parts[1]
+
+    if text.lower().startswith("json"):
+        text = text[4:]
+
+    return text.strip()

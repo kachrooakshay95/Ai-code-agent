@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from refactoring_agent import refactor_code_agent
 from duplicate_agent import duplicate_removal_agent
 from parameterization_agent import parameterization_agent
+from orchestrator import orchestrate_agents
 
 app = FastAPI()
 
@@ -35,3 +36,8 @@ def remove_duplicates(payload: CodeRequest):
 def parameterize_code(payload: CodeRequest):
     result = parameterization_agent(payload.dict())
     return {"optimized_code": result}
+
+@app.post("/orchestrate")
+def orchestrate(payload: CodeRequest):
+    result = orchestrate_agents(payload.dict())
+    return result
